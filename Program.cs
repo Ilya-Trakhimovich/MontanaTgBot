@@ -1,12 +1,13 @@
-﻿using System.Reflection.PortableExecutable;
+﻿using MontanaTgBot.Data.Constants;
+using MontanaTgBot.Services;
+using MontanaTgBot.Services.Interface;
 using Telegram.Bot;
 using Telegram.Bot.Exceptions;
 using Telegram.Bot.Polling;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
-using Telegram.Bot.Types.ReplyMarkups;
 
-var botClient = new TelegramBotClient("5428969579:AAGkGOc2VavB-EOdg5BdczobBzOpi7zXkvg");
+var botClient = new TelegramBotClient("");
 
 using var cts = new CancellationTokenSource();
 
@@ -31,71 +32,53 @@ cts.Cancel();
 
 async Task HandleUpdateAsync(ITelegramBotClient botClient, Update update, CancellationToken cancellationToken)
 {
-    // Only process Message updates: https://core.telegram.org/bots/api#message
     if (update.Message is not { } message)
         return;
 
-    // Only process text messages
     if (message.Text is not { } messageText)
         return;
 
     var chatId = message.Chat.Id;
+    var clientMessage = message.Text.ToLower();
 
     Console.WriteLine($"Received a '{messageText}' message in chat {chatId}.");
 
-    ReplyKeyboardMarkup mainKeyboardMarkup = new(new[]
+    Dictionary<string, IMenuAction> montanaExecuteMenu = new Dictionary<string, IMenuAction>
     {
-        new KeyboardButton[] { "Меню", "Контакты" }
-    })
-    {
-        ResizeKeyboard = true
+        { Constants.START, new StartMenu()},
+        { Constants.MENU, new CategoriesMenu()},
+        { Constants.CONTACT, new MontanaContact() },
+        { Constants.FIRST_DISHES, new FirstDishesMenu()}
     };
 
-    ReplyKeyboardMarkup menuKeyboardMarkup = new(new[]
-    {
-        new KeyboardButton[] { "Первые блюда" },
-        new KeyboardButton[] { "Вторые блюда" },
-        new KeyboardButton[] { "Напитки" },
-    });
+    var validMenuAction = montanaExecuteMenu.ContainsKey(message.Text);
 
-    string number = message.Text;
-
-    switch (number)
+    if (validMenuAction)
     {
-        case "/start":
-            Message sentStartMessage = await botClient.SendTextMessageAsync(
-                chatId: chatId,
-                text: "Сделайте заказ",
-                replyMarkup: mainKeyboardMarkup,
-                cancellationToken: cancellationToken);
-            break;
-        case "Меню":
-            Message sentMenuMessage = await botClient.SendTextMessageAsync(
-                chatId: chatId,
-                text: "блюда",
-                replyMarkup: menuKeyboardMarkup,
-                cancellationToken: cancellationToken);
-            break;
-        case "Контакты":
-            Message locationMessage = await botClient.SendVenueAsync(
-               chatId: chatId,
-               latitude: 54.90708103435659,
-               longitude: 26.70834078274852,
-               title: "Montana kitchen & bar",
-               address: "к.п. Нарочь , ул. Набережная ,1, Беларусь",
-               cancellationToken: cancellationToken);
-            break;
-        case "Первые блюда":
-            Message mealMessage = await botClient.SendPhotoAsync(
-            chatId: chatId,
-            caption: "Борщ",
-            photo: new Telegram.Bot.Types.InputFiles.InputOnlineFile(new Uri("https://github.com/Ilya-Trakhimovich/Photo/blob/master/src/FirstMeal/borsh.jpg")),
-            parseMode: ParseMode.Html,
-            cancellationToken: cancellationToken);
-            break;
-        default:
-            Console.WriteLine("default");
-            break;
+        var menuAction = montanaExecuteMenu[clientMessage];
+
+        await menuAction.Execute(botClient, update, cancellationToken);
+    }
+
+    List<string> firstMealMenu = new List<string> { Constants.BORSCH, Constants.SOLYANKA };
+
+    var validFirstMealsAction = firstMealMenu.Contains(clientMessage);
+
+    if (validFirstMealsAction)
+    {
+        await new DishesMenuAmount().Execute(botClient, update, cancellationToken);
+    }
+
+    List<string> amountMenu = new List<string>
+    {
+        Constants.ONE, Constants.TWO, Constants.THREE, Constants.FOUR, Constants.FIVE_AND_MORE
+    };
+
+    var validAmountAction = amountMenu.Contains(clientMessage);
+
+    if (validAmountAction)
+    {
+        await new PickDishMenu().Execute(botClient, update, cancellationToken);
     }
 }
 

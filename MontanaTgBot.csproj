@@ -12,6 +12,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="Data\Enums\" />
     <Folder Include="Sources\FirstMeal\" />
   </ItemGroup>
 
