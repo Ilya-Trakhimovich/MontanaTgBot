@@ -1,63 +1,66 @@
-﻿using Telegram.Bot.Types.ReplyMarkups;
+﻿using MontanaTgBot.Data.Constants;
+using Telegram.Bot.Types.ReplyMarkups;
 
 namespace MontanaTgBot.Models.KeyBoardMarkups
 {
     internal static class MontanaKeyboard
     {
-        public static ReplyKeyboardMarkup GetMontanaStartMenuKeyboard()
+        public static ReplyKeyboardMarkup GetStartMenuKeyboard()
         {
             return new(new[]
             {
-                new KeyboardButton[] { "Меню", "Контакты" }
+                new KeyboardButton[] { Constants.MENU, Constants.CONTACT }
             })
             {
                 ResizeKeyboard = true
             };
         }
 
-        public static ReplyKeyboardMarkup GetMontanaMenuKeyboard()
+        public static ReplyKeyboardMarkup GetCategoryMenuKeyboard()
         {
             return new(new[]
             {
-                new KeyboardButton[] { "Первые блюда" },
-                new KeyboardButton[] { "Вторые блюда" },
-                new KeyboardButton[] { "Напитки" },
+                new KeyboardButton[] { Constants.FIRST_DISHES},
+                new KeyboardButton[] { Constants.SECOND_DISHES },
+                new KeyboardButton[] { Constants.PIZZA},
+                new KeyboardButton[] { Constants.DRINKS },
             })
             {
                 ResizeKeyboard = true
             };
         }
 
-        public static ReplyKeyboardMarkup GetMontanaAmountMenuKeyboard()
+        public static ReplyKeyboardMarkup GetAmountMenuKeyboard()
         {
             return new(new[]
             {
-                new KeyboardButton[] { "1", "2" },
-                new KeyboardButton[] { "3", "4" },
-                new KeyboardButton[] { "5 и более (с Вами свяжется администратор)" },
+                new KeyboardButton[] { Constants.ONE, Constants.TWO },
+                new KeyboardButton[] { Constants.THREE, Constants.FOUR},
+                new KeyboardButton[] {  Constants.FIVE_AND_MORE },
             })
             {
                 ResizeKeyboard = true
             };
         }
 
-        public static ReplyKeyboardMarkup GetMontanaFirstDishMenuKeyboard()
+        public static ReplyKeyboardMarkup GetDishMenuKeyboard(params string[] dishes)
         {
-            return new(new[]
+            var dishKeyBoard = new KeyboardButton[dishes.Length];
+
+            for (var i = 0; i < dishes.Length; i++)
             {
-                new KeyboardButton[] { "Борщ", "Солянка" }
-            })
-            {
-                ResizeKeyboard = true
-            };
+                dishKeyBoard[i] = dishes[i];
+            }
+
+            return new(new[] { dishKeyBoard }) { ResizeKeyboard = true };
         }
 
-        public static ReplyKeyboardMarkup GetPickedDishMenuKeyboard()
+        public static ReplyKeyboardMarkup GetSelectedDishMenuKeyboard()
         {
             return new(new[]
             {
-                new KeyboardButton[] { "Меню" },
-                new KeyboardButton[] { "Корзина" }
+                new KeyboardButton[] { Constants.MENU },
+                new KeyboardButton[] { Constants.CART }
             })
             {
                 ResizeKeyboard = true

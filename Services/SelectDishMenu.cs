@@ -1,25 +1,24 @@
-﻿
-using MontanaTgBot.Models.KeyBoardMarkups;
+﻿using MontanaTgBot.Models.KeyBoardMarkups;
 using Telegram.Bot.Types.ReplyMarkups;
 using Telegram.Bot.Types;
 using Telegram.Bot;
 
 namespace MontanaTgBot.Services
 {
-    internal class PickDishMenu
+    internal class SelectDishMenu
     {
-        private readonly ReplyKeyboardMarkup _pickedDishKeyboardMarkup;
+        private readonly ReplyKeyboardMarkup _selectedDishKeyboardMarkup;
 
-        public PickDishMenu()
+        public SelectDishMenu()
         {
-            _pickedDishKeyboardMarkup = MontanaKeyboard.GetPickedDishMenuKeyboard();
+            _selectedDishKeyboardMarkup = MontanaKeyboard.GetSelectedDishMenuKeyboard();
         }
 
         public async Task Execute(ITelegramBotClient botClient, Update update, CancellationToken cancellationToken)
         {
             Message sentBorshAmounttMessage = await botClient.SendTextMessageAsync(chatId: update.Message.Chat.Id,
                                                                                    text: $"Вы выбрали {update.Message.Text}",
-                                                                                   replyMarkup: _pickedDishKeyboardMarkup,
+                                                                                   replyMarkup: _selectedDishKeyboardMarkup,
                                                                                    cancellationToken: cancellationToken);
         }
     }

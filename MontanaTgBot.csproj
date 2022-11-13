@@ -8,12 +8,18 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Sources\FirstMeal\**" />
+    <EmbeddedResource Remove="Sources\FirstMeal\**" />
+    <None Remove="Sources\FirstMeal\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="System.Runtime.Caching" Version="7.0.0" />
     <PackageReference Include="Telegram.Bot" Version="18.0.0" />
   </ItemGroup>
 
   <ItemGroup>
     <Folder Include="Data\Enums\" />
-    <Folder Include="Sources\FirstMeal\" />
   </ItemGroup>
 
 </Project>

@@ -12,13 +12,13 @@ namespace MontanaTgBot.Services
 
         public StartMenu()
         {
-            firstMeakKeyboardMarkup = MontanaKeyboard.GetMontanaStartMenuKeyboard();
+            firstMeakKeyboardMarkup = MontanaKeyboard.GetStartMenuKeyboard();
         }
 
         public async Task Execute(ITelegramBotClient botClient, Update update, CancellationToken cancellationToken)
         {
             Message sentStartMessage = await botClient.SendTextMessageAsync(chatId: update.Message.Chat.Id,
-                                                                            text: "Сделайте заказ",
+                                                                            text: "Приветствую! У нас очень вкусная кухня, поехали!",
                                                                             replyMarkup: firstMeakKeyboardMarkup,
                                                                             cancellationToken: cancellationToken);
         }

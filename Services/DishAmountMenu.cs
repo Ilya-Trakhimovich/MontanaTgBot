@@ -5,19 +5,19 @@ using Telegram.Bot.Types.ReplyMarkups;
 
 namespace MontanaTgBot.Services
 {
-    internal class DishesMenuAmount
+    internal class DishAmountMenu
     {
         private readonly ReplyKeyboardMarkup _amountKeyboardMarkup;
 
-        public DishesMenuAmount()
+        public DishAmountMenu()
         {
-            _amountKeyboardMarkup = MontanaKeyboard.GetMontanaAmountMenuKeyboard();
+            _amountKeyboardMarkup = MontanaKeyboard.GetAmountMenuKeyboard();
         }
 
         public async Task Execute(ITelegramBotClient botClient, Update update, CancellationToken cancellationToken)
         {
             Message sentBorshAmounttMessage = await botClient.SendTextMessageAsync(chatId: update.Message.Chat.Id,
-                                                                                   text: "Выберите количество",
+                                                                                   text: "Сколько порций? Выберите количество",
                                                                                    replyMarkup: _amountKeyboardMarkup,
                                                                                    cancellationToken: cancellationToken);
         }
